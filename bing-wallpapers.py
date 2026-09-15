@@ -22,12 +22,12 @@ def check_new_image():
     image_url = "https://www.bing.com/th?" + urlencode({"id": image_id})
     image_name = Path(image_id).name.removeprefix("OHR.")
     filename = f"{image_info['startdate']}_{image_name}"
-
+    # Download image if it doesn't exist
     image_path = BASE_DIR / filename
     if not image_path.exists():
         image = requests.get(image_url)
         image_path.write_bytes(image.content)
-        subprocess.Popen(CMD.format(image_path.resolve()), shell=True)
+    subprocess.Popen(CMD.format(image_path.resolve()), shell=True)
 
 
 if __name__ == "__main__":
