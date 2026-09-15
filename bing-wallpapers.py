@@ -40,7 +40,7 @@ def check_new_image():
     if not image_path.exists():
         image = requests.get(image_url)
         image_path.write_bytes(image.content)
-    set_wallpaper(image_path)
+        set_wallpaper(image_path)
 
 
 if __name__ == "__main__":
