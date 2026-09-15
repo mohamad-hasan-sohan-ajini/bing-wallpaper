@@ -9,10 +9,11 @@ import requests
 BASE_DIR = Path.home() / "Pictures" / "bing-wallpaper" / "bing-wallpapers"
 BING = "https://www.bing.com/HPImageArchive.aspx?format=js&uhd=1&idx=0&n=1&mkt=en-GB"
 CMD = 'gsettings set org.gnome.desktop.background picture-uri "file://{}"'
+TIMEOUT = 10  # seconds
 
 
 def check_new_image():
-    response = requests.get(BING)
+    response = requests.get(BING, timeout=TIMEOUT)
     response.raise_for_status()
     image_info = response.json()["images"][0]
     image_id = parse_qs(urlsplit(image_info["url"]).query)["id"][0]
