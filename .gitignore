@@ -34,3 +34,5 @@ coverage.xml
 # JPG images
 *.[jJ][pP][gG]
 *.[jJ][pP][eE][gG]
+
+*.log
