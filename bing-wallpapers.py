@@ -1,4 +1,5 @@
 # coding: utf-8
+import os
 import subprocess
 from pathlib import Path
 from urllib.parse import parse_qs, urlencode, urlsplit
@@ -8,8 +9,21 @@ import requests
 # CONSTANT
 BASE_DIR = Path.home() / "Pictures" / "bing-wallpaper" / "bing-wallpapers"
 BING = "https://www.bing.com/HPImageArchive.aspx?format=js&uhd=1&idx=0&n=1&mkt=en-GB"
-CMD = 'gsettings set org.gnome.desktop.background picture-uri "file://{}"'
+BACKGROUND_SCHEMA = "org.gnome.desktop.background"
 TIMEOUT = 10  # seconds
+
+
+def set_wallpaper(image_path):
+    image_uri = image_path.resolve().as_uri()
+    settings_env = os.environ.copy()
+    # Snap-packaged editors can override this with outdated desktop schemas.
+    settings_env["GSETTINGS_SCHEMA_DIR"] = "/usr/share/glib-2.0/schemas"
+    for key in ("picture-uri", "picture-uri-dark"):
+        subprocess.run(
+            ["gsettings", "set", BACKGROUND_SCHEMA, key, image_uri],
+            check=True,
+            env=settings_env,
+        )
 
 
 def check_new_image():
@@ -27,7 +41,7 @@ def check_new_image():
     if not image_path.exists():
         image = requests.get(image_url)
         image_path.write_bytes(image.content)
-    subprocess.Popen(CMD.format(image_path.resolve()), shell=True)
+    set_wallpaper(image_path)
 
 
 if __name__ == "__main__":
