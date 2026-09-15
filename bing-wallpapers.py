@@ -2,7 +2,7 @@
 import json
 import subprocess
 from pathlib import Path
-from urllib.parse import parse_qs, urlsplit
+from urllib.parse import parse_qs, urlencode, urlsplit
 
 import requests
 
@@ -16,17 +16,17 @@ def check_new_image():
     r = requests.get(BING)
     j = json.loads(r.text)
     image_info = j["images"][0]
-    urlbase = image_info["urlbase"]
-    image_url = f"https://bing.com{urlbase}_UHD.jpg"
-    image_id = parse_qs(urlsplit(image_url).query)["id"][0]
+    image_id = parse_qs(urlsplit(image_info["url"]).query)["id"][0]
+    image_id = image_id.rsplit("_", 1)[0] + "_UHD.jpg"
+    # Keep only the image ID: Bing's width/height parameters resize UHD images.
+    image_url = "https://www.bing.com/th?" + urlencode({"id": image_id})
     image_name = Path(image_id).name.removeprefix("OHR.")
     filename = f"{image_info['startdate']}_{image_name}"
 
     image_path = BASE_DIR / filename
     if not image_path.exists():
         image = requests.get(image_url)
-        with image_path.open("wb+") as f:
-            f.write(image.content)
+        image_path.write_bytes(image.content)
         subprocess.Popen(CMD.format(image_path.resolve()), shell=True)
 
 
