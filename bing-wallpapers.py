@@ -8,7 +8,7 @@ import requests
 
 # CONSTANT
 BASE_DIR = Path.home() / "Pictures" / "bing-wallpaper" / "bing-wallpapers"
-BING = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US"
+BING = "https://www.bing.com/HPImageArchive.aspx?format=js&uhd=1&idx=0&n=1&mkt=en-GB"
 CMD = 'gsettings set org.gnome.desktop.background picture-uri "file://{}"'
 
 
@@ -17,7 +17,7 @@ def check_new_image():
     j = json.loads(r.text)
     image_info = j["images"][0]
     urlbase = image_info["urlbase"]
-    image_url = f"https://bing.com{urlbase}_1920x1080.jpg"
+    image_url = f"https://bing.com{urlbase}_UHD.jpg"
     image_id = parse_qs(urlsplit(image_url).query)["id"][0]
     image_name = Path(image_id).name.removeprefix("OHR.")
     filename = f"{image_info['startdate']}_{image_name}"
