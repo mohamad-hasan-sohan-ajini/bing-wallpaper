@@ -31,17 +31,31 @@ Change `mkt=en-GB` in the `BING` URL to select other locations, such as `en-US`.
 
 ## Run automatically
 
-To check every 15 minutes, run `crontab -e` as your desktop user and add:
+To run the script every minute:
+
+1. Open a terminal as your normal desktop user and run `id -u` to find your user ID.
+2. Run `crontab -e` to open your user's scheduled tasks in a text editor. Do NOT use
+   `sudo`. If prompted to choose an editor, select nano.
+3. Paste the following three lines at the bottom of the file opened by
+   `crontab -e`. The line starting with `* * * * *` belongs in this file; keep the
+   entire command on one line.
 
 ```cron
 XDG_RUNTIME_DIR=/run/user/1000
 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
-*/15 * * * * /home/YOUR_USER/Pictures/bing-wallpaper/.venv/bin/python /home/YOUR_USER/Pictures/bing-wallpaper/bing-wallpapers.py >> /home/YOUR_USER/Pictures/bing-wallpaper/wallpaper.log 2>&1
+* * * * * /home/YOUR_USER/Pictures/bing-wallpaper/.venv/bin/python /home/YOUR_USER/Pictures/bing-wallpaper/bing-wallpapers.py >> /home/YOUR_USER/Pictures/bing-wallpaper/wallpaper.log 2>&1
 ```
 
 Replace `/home/YOUR_USER` with your home directory and `1000` with the output of
-`id -u`. Wallpaper updates require your desktop session to be running. Check
-`wallpaper.log` for errors.
+`id -u`. The Python path assumes you created `.venv` using the setup instructions;
+adjust it if your virtual environment is elsewhere.
+
+4. Save and close the editor. In nano, press **Ctrl+O**, **Enter**, then **Ctrl+X**.
+   Cron installs the schedule when you save and exit.
+5. Run `crontab -l` in the terminal to confirm the entry was saved.
+
+The five asterisks mean “every minute.” Wallpaper updates require your desktop
+session to be running. Check `wallpaper.log` in the project directory for errors.
 
 ## Troubleshooting
 
