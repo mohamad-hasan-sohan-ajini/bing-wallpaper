@@ -1,5 +1,4 @@
 # coding: utf-8
-import json
 import subprocess
 from pathlib import Path
 from urllib.parse import parse_qs, urlencode, urlsplit
@@ -13,9 +12,9 @@ CMD = 'gsettings set org.gnome.desktop.background picture-uri "file://{}"'
 
 
 def check_new_image():
-    r = requests.get(BING)
-    j = json.loads(r.text)
-    image_info = j["images"][0]
+    response = requests.get(BING)
+    response.raise_for_status()
+    image_info = response.json()["images"][0]
     image_id = parse_qs(urlsplit(image_info["url"]).query)["id"][0]
     image_id = image_id.rsplit("_", 1)[0] + "_UHD.jpg"
     # Keep only the image ID: Bing's width/height parameters resize UHD images.
