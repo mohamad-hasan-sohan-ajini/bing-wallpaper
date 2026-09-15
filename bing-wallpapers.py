@@ -31,7 +31,6 @@ def check_new_image():
     response.raise_for_status()
     image_info = response.json()["images"][0]
     image_id = parse_qs(urlsplit(image_info["url"]).query)["id"][0]
-    image_id = image_id.rsplit("_", 1)[0] + "_UHD.jpg"
     # Keep only the image ID: Bing's width/height parameters resize UHD images.
     image_url = "https://www.bing.com/th?" + urlencode({"id": image_id})
     image_name = Path(image_id).name.removeprefix("OHR.")
